@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Management</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #f4f4f4;
+        }
+
+        .btn-delete {
+            padding: 5px 10px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            background-color: #d11a2a;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Meal Management</h1>
+        <form method="POST" action="{% url 'meal_list' %}" class="form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Meal Name:</label>
+                <input type="text" name="name" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="ingredients">Ingredients:</label>
+                <textarea name="ingredients" id="ingredients" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" step="0.01" name="price" id="price" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <select name="type" id="type">
+                    <option value="Appetizer">Appetizer</option>
+                    <option value="Main Course">Main Course</option>
+                    <option value="Dessert">Dessert</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="cuisine">Cuisine:</label>
+                <input type="text" name="cuisine" id="cuisine" required>
+            </div>
+            <button type="submit" class="btn">Add Meal</button>
+        </form>
+
+        <h2>Saved Meals</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Ingredients</th>
+                    <th>Price</th>
+                    <th>Type</th>
+                    <th>Cuisine</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for meal in meals %}
+                <tr>
+                    <td>{{ meal.name }}</td>
+                    <td>{{ meal.ingredients }}</td>
+                    <td>${{ meal.price }}</td>
+                    <td>{{ meal.type }}</td>
+                    <td>{{ meal.cuisine }}</td>
+                    <td>
+                        <button class="btn-delete" onclick="location.href='{% url 'delete_meal' meal.id %}'">Delete</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-message">No meals saved yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
